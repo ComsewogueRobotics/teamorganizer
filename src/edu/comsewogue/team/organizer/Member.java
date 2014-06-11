@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class Member implements Serializable {
 	
-	public enum Subteam{
+	public static enum Subteam{
 		CONTROL("Control", 0), BUILD("Build", 1), PNEUMATICS("Pneumatics", 2), SCOUT("Scouting", 3);
 		private final int ID;
 		private final String name;

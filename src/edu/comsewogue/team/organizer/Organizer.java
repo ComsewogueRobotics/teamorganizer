@@ -1,22 +1,55 @@
 package edu.comsewogue.team.organizer;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Properties;
+
+import edu.comsewogue.team.organizer.Member.Subteam;
 
 public class Organizer {
-	private static final String LIST_PATH = "/data/list.dat";
+	private static final String LIST_PATH = "\\data\\list.dat";
 	private static ArrayList<Integer> members;
 	private static ArrayList<Member> loaded = new ArrayList<Member>();
-
+	private static String teamName;
+	private static String backgroundPath;
 	
 	public static void main(String[] args){
 		//TODO: GUI stuff
+		try{
+			FileInputStream fileIn = new FileInputStream("\\data\\props.txt");
+			Properties props = new Properties();
+			props.load(fileIn);
+			fileIn.close();
+			teamName = props.getProperty("teamName");
+			backgroundPath = props.getProperty("backgroundPath");
+		}catch(FileNotFoundException e){
+			System.out.println("Creating default properties file...");
+			Properties props = new Properties();
+			props.setProperty("backgroundPath", "/data/defaultBackground.jpg");
+			props.setProperty("teamName", "Default Name");
+			try{
+				File newFile = new File("\\data\\props.txt");
+				newFile.createNewFile();
+				FileOutputStream fileOut = new FileOutputStream("\\data\\props.txt");
+				props.store(fileOut, "---No Comment---");
+				fileOut.close();
+			}catch(Exception e2){
+				e2.printStackTrace();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		loadList();
 		//new GUI();
 	}
+	public static String getTeamName(){ return teamName; }
+	public static String getBackgroundPath(){ return backgroundPath; }
+	public static String getDir(){ return System.getProperty("user.dir"); }
 	public static void saveAllAndClose(){
 		for(Member m: loaded){
 			m.save();
@@ -31,6 +64,9 @@ public class Organizer {
 			members = (ArrayList<Integer>) in.readObject();
 			in.close();
 			fileIn.close();
+		} catch(FileNotFoundException e){
+			members = new ArrayList<Integer>();
+			saveList();
 		} catch(Exception e){
 			e.printStackTrace();
 		}
@@ -52,7 +88,7 @@ public class Organizer {
 			FileInputStream fileIn;
 			ObjectInputStream in;
 			for(Integer i: members){
-				fileIn = new FileInputStream("/data/"+i+".dat");
+				fileIn = new FileInputStream("\\data\\"+i+".dat");
 				in = new ObjectInputStream(fileIn);
 				loaded.add((Member) in.readObject());
 				in.close();
@@ -62,4 +98,49 @@ public class Organizer {
 			e.printStackTrace();
 		}
 	}
+	public void addMember(String name, int id, Subteam team){
+		Member m = new Member(name, id, team);
+		m.save();
+		members.add(m.getID());
+	}
+	public Member getMember(int id){
+		for(Member m: loaded){
+			if(m.getID()==id)
+				return m;
+		}
+		FileInputStream fileIn;
+		ObjectInputStream in;
+		try{
+			fileIn = new FileInputStream("\\data\\"+id+".dat");
+			in = new ObjectInputStream(fileIn);
+			Member m = (Member) in.readObject();
+			in.close();
+			fileIn.close();
+			return m;
+		}catch(Exception e){
+			return null;
+		}
+		
+	}
+	public void clockInMember(int id){
+		Member m = getMember(id);
+		loaded.add(m);
+		m.clockIn();
+	}
+	public void clockOutMember(int id){
+		Member m = getMember(id);
+		loaded.remove(m);
+		m.clockOut();
+		m.save();
+	}
+	public void saveAllNotClockedIn(){
+		for(int i = 0; i<loaded.size(); i++){
+			Member m = loaded.get(i);
+			if(!m.isClockedIn()){
+				m.save();
+				loaded.remove(i);
+			}
+		}
+	}
+	
 }
