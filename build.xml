@@ -24,6 +24,7 @@
     			<exclude name="props.txt"/>
 			</fileset>
 		</copy>
+    	<touch file="./build/data/list.dat"/>
     	<copy file="./data/props.txt" todir="./build"/>
     	<chmod file="./build/start.sh" perm="755"/>
     </target>

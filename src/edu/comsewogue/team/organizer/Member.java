@@ -64,7 +64,7 @@ public class Member implements Serializable {
 	public void save(){
 		if(!isClockedIn()){
 			try{
-				FileOutputStream fileOut = new FileOutputStream("/data/"+getID()+".dat");
+				FileOutputStream fileOut = new FileOutputStream(Organizer.DATA_PATH+getID()+".dat");
 				ObjectOutputStream out = new ObjectOutputStream(fileOut);
 				out.writeObject(this);
 				out.close();

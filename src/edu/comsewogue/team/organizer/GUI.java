@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,11 +14,16 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import edu.comsewogue.team.organizer.Member.Subteam;
 
 
 public class GUI extends JFrame /*basic windows features like minimize*/{
@@ -31,6 +37,8 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 	private JLabel idLabel;
 	private JTextField txt;
 	private Image background;
+	
+	private JPanel addMemPanel;
 	
 	public static void main(String [] args)
 	{
@@ -87,6 +95,7 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 		p.add(txt);
 		p.add(bIN);
 		p.add(bOUT);
+		p.add(bAdd);
 		bIN.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				Organizer.clockInMember(Integer.parseInt(txt.getText()));
@@ -99,10 +108,41 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 				txt.setText("");
 			}
 		});
+		bAdd.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				JTextField name = new JTextField();
+				JTextField id = new JTextField();
+				addMemPanel = new JPanel(new GridLayout(3,3));
+				addMemPanel.add(new JLabel("Name: "));
+				addMemPanel.add(name);
+				addMemPanel.add(Box.createHorizontalStrut(15)); //Spacer
+				addMemPanel.add(new JLabel("ID Number: "));
+				addMemPanel.add(id);
+				addMemPanel.add(Box.createHorizontalStrut(15)); //Spacer
+				addMemPanel.add(new JLabel("Subteam: "));
+				Subteam[] subteams = {Subteam.CONTROL, Subteam.BUILD, Subteam.PNEUMATICS, Subteam.SCOUT};
+				JComboBox<Subteam> subteamSelector = new JComboBox<Subteam>(subteams);
+				addMemPanel.add(subteamSelector);
+				 int result = JOptionPane.showConfirmDialog(null, addMemPanel, 
+			               "Please Enter Name, ID, and Subteam", JOptionPane.OK_CANCEL_OPTION);
+				 if(result==JOptionPane.OK_OPTION){
+					 Subteam team = (Subteam)subteamSelector.getSelectedItem();
+					 Organizer.addMember(name.getText(), Integer.parseInt(id.getText()), team);
+				 }
+			}
+		});
 		f.add(p);
 		f.pack();
 		f.setVisible(true);
 		
 	}
+	public static void message(String m){
+		JOptionPane.showMessageDialog(null, m, "Information", JOptionPane.PLAIN_MESSAGE);
+	}
+	public static void error(String m){
+		JOptionPane.showMessageDialog(null, m, "Error!", JOptionPane.ERROR_MESSAGE);
+	}
 	
 }
+
+

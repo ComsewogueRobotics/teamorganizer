@@ -14,6 +14,7 @@ import edu.comsewogue.team.organizer.Member.Subteam;
 
 public class Organizer {
 	private static final String LIST_PATH = getDir()+"/data/list.dat";
+	public static final String DATA_PATH = getDir()+"/data/";
 	private static ArrayList<Integer> members;
 	private static ArrayList<Member> loaded = new ArrayList<Member>();
 	private static String teamName;
@@ -90,7 +91,7 @@ public class Organizer {
 			FileInputStream fileIn;
 			ObjectInputStream in;
 			for(Integer i: members){
-				fileIn = new FileInputStream("/data/"+i+".dat");
+				fileIn = new FileInputStream(DATA_PATH+i+".dat");
 				in = new ObjectInputStream(fileIn);
 				loaded.add((Member) in.readObject());
 				in.close();
@@ -100,8 +101,16 @@ public class Organizer {
 			e.printStackTrace();
 		}
 	}
+	
+
 	public static void addMember(String name, int id, Subteam team){
 		Member m = new Member(name, id, team);
+		File newMember = new File(DATA_PATH+id+".dat");
+		try{
+			newMember.createNewFile();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		m.save();
 		members.add(m.getID());
 	}
@@ -113,7 +122,7 @@ public class Organizer {
 		FileInputStream fileIn;
 		ObjectInputStream in;
 		try{
-			fileIn = new FileInputStream("/data/"+id+".dat");
+			fileIn = new FileInputStream(DATA_PATH+id+".dat");
 			in = new ObjectInputStream(fileIn);
 			Member m = (Member) in.readObject();
 			in.close();
