@@ -1,0 +1,7 @@
+#Properties file for Team Organizer
+
+#Put the path to your desired background image here.
+backgroundPath=/data/defaultBackground.jpg
+
+#Put the name of your team here:
+teamName=Default Name
