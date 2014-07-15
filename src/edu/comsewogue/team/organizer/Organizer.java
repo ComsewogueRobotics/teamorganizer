@@ -22,7 +22,7 @@ public class Organizer {
 	
 	public static void main(String[] args){
 		try{
-			FileInputStream fileIn = new FileInputStream(getDir()+"/data/props.txt");
+			FileInputStream fileIn = new FileInputStream("props.txt");
 			Properties props = new Properties();
 			props.load(fileIn);
 			fileIn.close();
@@ -36,8 +36,8 @@ public class Organizer {
 			try{
 				File newFile = new File("props.txt");
 				newFile.createNewFile();
-				FileOutputStream fileOut = new FileOutputStream(getDir()+"/data/props.txt");
-				props.store(fileOut, "---No Comment---");
+				FileOutputStream fileOut = new FileOutputStream("props.txt");
+				props.store(fileOut, "Default properties file for Team Organizer");
 				fileOut.close();
 			}catch(Exception e2){
 				e2.printStackTrace();

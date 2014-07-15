@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="create_run_jar" name="Create Runnable Jar for Project teamorganizer">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
-    <!--ANT 1.7 is required                                        -->
-    <target name="create_run_jar">
-        <jar destfile="E:/workspace/teamorganizer/build/organizer.jar" filesetmanifest="mergewithoutmain">
+    <!--ANT 1.7 is required-->     
+    <target name="compile">
+    		<javac srcdir="./src" destdir="./bin"/>
+    </target>
+    <target name="create_run_jar" depends="compile">
+        <delete dir="./build"/>
+    	<jar destfile="./build/organizer.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="edu.comsewogue.team.organizer.Organizer"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="E:/workspace/teamorganizer/bin"/>
+            <fileset dir="./bin"/>
         </jar>
+    	<chmod file="./build/organizer.jar" perm="ugo+rx"/>
+    	<touch file="./build/start.sh"/>
+    	<echo file="./build/start.sh" message="java -jar organizer.jar"/>
+    	<touch file="./build/start.bat"/>
+    	<echo file="./build/start.bat" message="java -jar organizer.jar"/>
+    	<copy todir="./build/data">
+    		<fileset dir="./data">
+    			<exclude name="props.txt"/>
+			</fileset>
+		</copy>
+    	<copy file="./data/props.txt" todir="./build"/>
+    	<chmod file="./build/start.sh" perm="755"/>
     </target>
 </project>
