@@ -19,6 +19,7 @@ public class Organizer {
 	private static ArrayList<Member> loaded = new ArrayList<Member>();
 	private static String teamName;
 	private static String backgroundPath;
+	private static GUI gui;
 
 	
 	public static void main(String[] args){
@@ -46,9 +47,9 @@ public class Organizer {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		new GUI();
+		gui = new GUI();
 		loadList();
-
+		gui.feed("Started");
 	}
 	public static String getTeamName(){ return teamName; }
 	public static String getBackgroundPath(){ return getDir()+backgroundPath; }
@@ -113,6 +114,7 @@ public class Organizer {
 		}
 		m.save();
 		members.add(m.getID());
+		gui.feed("Member "+m.getName()+" added.");
 	}
 	public static Member getMember(int id){
 		for(Member m: loaded){
@@ -135,14 +137,25 @@ public class Organizer {
 	}
 	public static void clockInMember(int id){
 		Member m = getMember(id);
-		loaded.add(m);
+		if(m==null){
+			GUI.error("Member not found. Have you added him/her?");
+			return;
+		}
+		if(!loaded.contains(m))
+			loaded.add(m);
 		m.clockIn();
+		gui.feed(m.getName()+" clocked in.");
 	}
 	public static void clockOutMember(int id){
 		Member m = getMember(id);
+		if(!loaded.contains(m)){
+			GUI.error(m.getName()+" is not clocked in!");
+			return;
+		}
 		loaded.remove(m);
 		m.clockOut();
 		m.save();
+		gui.feed("Member "+m.getName()+" clocked out.");
 	}
 	public static void saveAllNotClockedIn(){
 		for(int i = 0; i<loaded.size(); i++){

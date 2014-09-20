@@ -3,15 +3,18 @@ package edu.comsewogue.team.organizer;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -21,6 +24,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import edu.comsewogue.team.organizer.Member.Subteam;
@@ -32,11 +37,13 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 	private JPanel p;
 	private JButton bIN;
 	private JButton bOUT;
+	private JLabel idLabel;
 	//private JButton bViewHours;
 	private JButton bAdd;
-	private JLabel idLabel;
-	private JTextField txt;
+	private JTextField idIn;
 	private Image background;
+	private JScrollPane feedbackScroll;
+	private JTextArea feedback;
 	
 	private JPanel addMemPanel;
 	
@@ -88,24 +95,69 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 		bIN = new JButton("Sign In");
 		bOUT = new JButton("Sign Out");
 		bAdd = new JButton("Add Member");
-		txt = new JTextField("", 5);//parameter is size
-		txt.setToolTipText("Student ID");
-		//GridBagConstraints c = new GridBagConstraints();
-		p.add(idLabel);
-		p.add(txt);
-		p.add(bIN);
-		p.add(bOUT);
-		p.add(bAdd);
+		idIn = new JTextField("", 5);//parameter is size
+		idIn.setToolTipText("Student ID");
+		feedback = new JTextArea();
+		feedback.setEditable(false);
+		feedback.setOpaque(false);
+		feedbackScroll = new JScrollPane(feedback);
+		feedbackScroll.setOpaque(false);
+		GridBagConstraints c = new GridBagConstraints();
+		//TODO: layout stuff ugh
+		//Feedback text box
+
+		
+		c.weightx = .5;
+		c.ipady = 10;
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = 0;
+		p.add(idLabel, c);
+		
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = 0;
+		c.weightx = .5;
+		c.ipady = 10;
+		p.add(idIn, c);
+		
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = 0;
+		c.weightx = .5;
+		c.ipady = 10;
+		p.add(bIN, c);
+		
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = 0;
+		c.weightx = .5;
+		c.ipady = 10;
+		p.add(bOUT, c);
+		
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = 0;
+		c.weightx = .5;
+		c.ipady = 10;
+		p.add(bAdd, c);
+		
+		c.ipady = 300;
+		c.ipadx = 800;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.PAGE_END;
+		c.gridwidth = 5;
+		c.weightx = 0;
+		c.gridy = 1;
+		c.gridx = 0;
+		c.insets = new Insets(50,0,0,0);
+		p.add(feedbackScroll, c);
+		
 		bIN.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				Organizer.clockInMember(Integer.parseInt(txt.getText()));
-				txt.setText("");
+				Organizer.clockInMember(Integer.parseInt(idIn.getText()));
+				idIn.setText("");
 			}
 		});
 		bOUT.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				Organizer.clockOutMember(Integer.parseInt(txt.getText()));
-				txt.setText("");
+				Organizer.clockOutMember(Integer.parseInt(idIn.getText()));
+				idIn.setText("");
 			}
 		});
 		bAdd.addActionListener(new ActionListener(){
@@ -142,7 +194,9 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 	public static void error(String m){
 		JOptionPane.showMessageDialog(null, m, "Error!", JOptionPane.ERROR_MESSAGE);
 	}
-	
+	public void feed(String m){
+		feedback.append('['+new Timestamp(System.currentTimeMillis()).toString()+']'+m+'\n');
+	}
 }
 
 
