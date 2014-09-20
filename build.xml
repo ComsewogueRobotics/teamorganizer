@@ -17,6 +17,8 @@
     	<chmod file="./build/organizer.jar" perm="ugo+rx"/>
     	<touch file="./build/start.sh"/>
     	<echo file="./build/start.sh" message="java -jar organizer.jar"/>
+    	<touch file="./build/start.command"/>
+    	<echo file="./build/start.command" message="java -jar organizer.jar"/>
     	<touch file="./build/start.bat"/>
     	<echo file="./build/start.bat" message="java -jar organizer.jar"/>
     	<copy todir="./build/data">
@@ -27,5 +29,7 @@
     	<touch file="./build/data/list.dat"/>
     	<copy file="./data/props.txt" todir="./build"/>
     	<chmod file="./build/start.sh" perm="755"/>
+    	<chmod file="./build/start.command" perm="755"/>
+    	<chmod file="./build/start.bat" perm="755"/>
     </target>
 </project>

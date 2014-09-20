@@ -68,12 +68,16 @@ public class Organizer {
 			members = (ArrayList<Integer>) in.readObject();
 			in.close();
 			fileIn.close();
-		} catch(EOFException e){
-			members = new ArrayList<Integer>();
-			saveList();
+			//System.out.println("list loaded from file");
 		} catch(Exception e){
 			e.printStackTrace();
 		}
+		if(members==null||members.size()==0){
+			members = new ArrayList<Integer>();
+			saveList();
+			//System.out.println("failsafe members list");
+		}
+		//System.out.println("DEBUG:"+members);
 	}
 
 	public static void saveList(){
@@ -113,7 +117,12 @@ public class Organizer {
 			e.printStackTrace();
 		}
 		m.save();
+		try{
 		members.add(m.getID());
+		}catch(NullPointerException e){
+			loadList();
+			members.add(m.getID());
+		}
 		gui.feed("Member "+m.getName()+" added.");
 	}
 	public static Member getMember(int id){
