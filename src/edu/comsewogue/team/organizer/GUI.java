@@ -47,19 +47,20 @@ import javax.swing.JTextField;
 import edu.comsewogue.team.organizer.Member.Subteam;
 
 
-public class GUI extends JFrame /*basic windows features like minimize*/{
+public class GUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JFrame f;
 	private JPanel p;
 	private JButton bIN;
 	private JButton bOUT;
 	private JLabel idLabel;
-	//private JButton bViewHours;
+	private JButton bViewIndHours;
 	private JButton bAdd;
 	private JTextField idIn;
 	private Image background;
 	private JScrollPane feedbackScroll;
 	private JTextArea feedback;
+	private JButton bOutAll;
 	
 	private JPanel addMemPanel;
 	
@@ -72,7 +73,6 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 	{
 		gui();
 	}
-	
 	@SuppressWarnings("serial")
 	public void gui()
 	{
@@ -113,13 +113,14 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 		bAdd = new JButton("Add Member");
 		idIn = new JTextField("", 5);//parameter is size
 		idIn.setToolTipText("Student ID");
+		bViewIndHours = new JButton("View Hours");
 		feedback = new JTextArea();
 		feedback.setEditable(false);
 		feedback.setOpaque(false);
 		feedbackScroll = new JScrollPane(feedback);
 		feedbackScroll.setOpaque(false);
+		bOutAll = new JButton("Output All to File");
 		GridBagConstraints c = new GridBagConstraints();
-		//TODO: layout stuff ugh
 		//Feedback text box
 
 		
@@ -153,16 +154,27 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 		c.ipady = 10;
 		p.add(bAdd, c);
 		
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = 0;
+		c.weightx = .5;
+		c.ipady = 10;
+		p.add(bViewIndHours, c);
+		
 		c.ipady = 300;
 		c.ipadx = 800;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.anchor = GridBagConstraints.PAGE_END;
-		c.gridwidth = 5;
+		c.gridwidth = 6;
 		c.weightx = 0;
 		c.gridy = 1;
 		c.gridx = 0;
 		c.insets = new Insets(50,0,0,0);
 		p.add(feedbackScroll, c);
+		
+		c.fill = GridBagConstraints.NONE;
+		c.gridy = 2;
+		c.ipady = 10;
+		p.add(bOutAll, c);
 		
 		bIN.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -175,6 +187,13 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 				Organizer.clockOutMember(Integer.parseInt(idIn.getText()));
 				idIn.setText("");
 			}
+		});
+		bViewIndHours.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				feed(Organizer.oneMemberStats(Integer.parseInt(idIn.getText())));
+				
+				idIn.setText("");
+			}			
 		});
 		bAdd.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
@@ -199,6 +218,11 @@ public class GUI extends JFrame /*basic windows features like minimize*/{
 				 }
 			}
 		});
+		bOutAll.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				Organizer.writeAllToFile();
+			
+		}});
 		f.add(p);
 		f.pack();
 		f.setVisible(true);

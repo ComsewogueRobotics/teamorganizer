@@ -20,8 +20,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -188,6 +191,32 @@ public class Organizer {
 				m.save();
 				loaded.remove(i);
 			}
+		}
+	}
+	public static String oneMemberStats(int id){
+		DecimalFormat df = new DecimalFormat("0.00");
+		Member m = getMember(id);
+		Time t = m.getTime();
+		String result = 
+				"\n--------------------------------------------------------------------------------"+
+				"\nName: "+m.getName()+
+			    "\nTime: "+t.toString()+
+			    "\nTotal Hours: "+df.format(t.getTotalHours())+
+				"\n---------------------------------------------------------------------------------";
+		return result;
+	}
+	public static void writeAllToFile(){
+		try{
+			String outPath = getDir()+"/output.txt";
+			PrintWriter out = new PrintWriter(new FileWriter(outPath));
+			for(Integer id: members){
+				out.println(oneMemberStats(id));
+			}
+			out.close();
+			gui.feed("Output finished: "+outPath);
+		}catch(Exception e){
+			GUI.error("Error occurred while trying to output.");
+			
 		}
 	}
 	
