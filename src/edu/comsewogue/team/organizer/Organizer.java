@@ -127,6 +127,10 @@ public class Organizer {
 	
 
 	public static void addMember(String name, int id, Subteam team){
+		if(getMember(id)!=null){
+			GUI.error("Member with that ID already exists!");
+			return;
+		}
 		Member m = new Member(name, id, team);
 		File newMember = new File(DATA_PATH+id+".dat");
 		try{
@@ -168,10 +172,14 @@ public class Organizer {
 			GUI.error("Member not found. Have you added him/her?");
 			return;
 		}
+		if(m.isClockedIn()){
+			GUI.error(m.getName() + " is already clocked in!");
+			return;
+		}
 		if(!loaded.contains(m))
 			loaded.add(m);
 		m.clockIn();
-		gui.feed(m.getName()+" clocked in.");
+		gui.feed("Member " + m.getName()+" clocked in.");
 	}
 	public static void clockOutMember(int id){
 		Member m = getMember(id);
@@ -196,6 +204,9 @@ public class Organizer {
 	public static String oneMemberStats(int id){
 		DecimalFormat df = new DecimalFormat("0.00");
 		Member m = getMember(id);
+		if(m==null){
+			return null;
+		}
 		Time t = m.getTime();
 		String result = 
 				"\n--------------------------------------------------------------------------------"+

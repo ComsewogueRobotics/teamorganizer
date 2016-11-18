@@ -3,7 +3,7 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required-->     
     <target name="compile">
-    		<javac srcdir="./src" destdir="./bin"/>
+    		<javac srcdir="./src" destdir="./bin" fork="yes"/>
     </target>
     <target name="create_run_jar" depends="compile">
         <delete dir="./build"/>
@@ -20,7 +20,7 @@
     	<touch file="./build/start.command"/>
     	<echo file="./build/start.command" message="java -jar organizer.jar"/>
     	<touch file="./build/start.bat"/>
-    	<echo file="./build/start.bat" message="java -jar organizer.jar"/>
+    	<echo file="./build/start.bat" message="start javaw -jar organizer.jar"/>
     	<copy todir="./build/data">
     		<fileset dir="./data">
     			<exclude name="props.txt"/>

@@ -1,1 +1,1 @@
-java -jar organizer.jar
+start javaw -jar organizer.jar

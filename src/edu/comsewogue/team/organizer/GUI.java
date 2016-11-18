@@ -178,19 +178,56 @@ public class GUI extends JFrame {
 		
 		bIN.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				Organizer.clockInMember(Integer.parseInt(idIn.getText()));
+				int id;
+				try{
+					id = Integer.parseInt(idIn.getText());
+				} catch(Exception ex){
+					error("You did not enter an ID into the box!");
+					return;
+				}
+				if(Organizer.getMember(id)==null){
+					error("Member with that ID not found!");
+					idIn.setText("");
+					return;
+				}
+				Organizer.clockInMember(id);
 				idIn.setText("");
 			}
 		});
 		bOUT.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				Organizer.clockOutMember(Integer.parseInt(idIn.getText()));
+				int id;
+				try{
+					id = Integer.parseInt(idIn.getText());
+				} catch(Exception ex){
+					error("You did not enter an ID into the box!");
+					return;
+				}
+				if(Organizer.getMember(id)==null){
+					error("Member with that ID not found!");
+					idIn.setText("");
+					return;
+				}
+				Organizer.clockOutMember(id);
 				idIn.setText("");
 			}
 		});
 		bViewIndHours.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				feed(Organizer.oneMemberStats(Integer.parseInt(idIn.getText())));
+				int id;
+				try{
+					id = Integer.parseInt(idIn.getText());
+				} catch(Exception ex){
+					error("You did not enter an ID into the box!");
+					return;
+				}
+				String s = Organizer.oneMemberStats(id);
+				if(s==null){
+					error("Member with that ID not found!");
+					idIn.setText("");
+					return;
+				}
+				feed(s);
 				
 				idIn.setText("");
 			}			
